@@ -1,0 +1,56 @@
+# --------------------------------------------------------------
+# Create PLOT#4
+# --------------------------------------------------------------
+# Load the dataset
+
+# Download the file
+fileURL<-"https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+download.file(fileURL, method="curl", destfile="household_power_consumption.zip")
+
+# Load it
+unzip("household_power_consumption.zip")
+household_data<-read.table("household_power_consumption.txt", header=T, sep=";", na.strings="?",stringsAsFactors=F, comment.char="")
+
+# Filter the data
+household_data_filtered<-household_data[household_data$Date %in% c("1/2/2007","2/2/2007"),]
+
+# Free some memory
+rm(household_data)
+
+# Convert date/time strings to appropriate data types
+household_data_filtered$Date<-as.Date(household_data_filtered$Date,format="%d/%m/%Y")
+household_data_filtered$Time<-strptime(paste(household_data_filtered$Date,household_data_filtered$Time, sep=" "),format="%Y-%m-%d %H:%M:%S")	
+
+
+# --------------------------------------------------------------
+# Open the PNG Grapthics Device
+png("plot4.png",width=480, height=480)
+
+# --------------------------------------------------------------
+# Draw the plot
+
+# Divide the canvas into 4 subsections, organization row-wise
+par(mfrow=c(2,2))
+
+# Draw the first sub-plot
+with(household_data_filtered, plot(Time, Global_active_power, type="l", ylab="Global Active Power (kilowatts)", xlab=""))
+
+# Draw the second sub-plot
+with(household_data_filtered, plot(Time, Voltage, type="l", xlab="datetime"))
+
+# Draw the third sub-plot
+with(household_data_filtered,{
+plot(Time, Sub_metering_1, type="n", xlab="", ylab="Energy sub metering")
+lines(Time, Sub_metering_1, type="l")
+lines(Time, Sub_metering_2, type="l", col="red")
+lines(Time, Sub_metering_3, type="l", col="blue")
+legend("topright",c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),col=c("black","red","blue"), lty=1, bty="n")
+})
+
+# Draw the fourth sub-plot
+with(household_data_filtered, plot(Time, Global_reactive_power, type="l", xlab="datetime"))
+
+# --------------------------------------------------------------
+# Close the device
+dev.off()
+# --------------------------------------------------------------
