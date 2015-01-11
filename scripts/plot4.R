@@ -36,7 +36,7 @@ png("plot4.png",width=480, height=480)
 par(mfrow=c(2,2))
 
 # Draw the first sub-plot
-with(household_data_filtered, plot(DateTime, Global_active_power, type="l", ylab="Global Active Power (kilowatts)", xlab=""))
+with(household_data_filtered, plot(DateTime, Global_active_power, type="l", ylab="Global Active Power", xlab=""))
 
 # Draw the second sub-plot
 with(household_data_filtered, plot(DateTime, Voltage, type="l", xlab="datetime"))
